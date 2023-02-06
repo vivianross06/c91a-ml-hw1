@@ -57,12 +57,12 @@ def main():
     ### Your code here for creating the attacker object
     # Note that FGSM attack is a special case of PGD attack with specific hyper-parameters
     # You can also implement a separate FGSM class if you want
-    # attacker = attack_util.PGDAttack(
-    #     attack_step=args.attack_step, eps=eps, alpha=alpha, loss_type=args.loss_type,
-    #     targeted=args.targeted, num_classes=num_classes)
-    attacker = attack_util.FGSMAttack(
-        eps=eps
-    )
+    attacker = attack_util.PGDAttack(
+        attack_step=args.attack_step, eps=eps, alpha=alpha, loss_type=args.loss_type,
+        targeted=args.targeted, num_classes=num_classes)
+    #attacker = attack_util.FGSMAttack(
+    #    eps=eps
+    #)
     ### Your code ends
 
     total = 0

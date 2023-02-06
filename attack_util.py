@@ -109,5 +109,6 @@ class FGSMAttack():
         data_grad = X.grad.data
         sign_data_grad = data_grad.sign()
         delta = sign_data_grad * self.eps
+        delta = torch.clamp(delta, -self.eps, self.eps)
         ### Your code ends
         return delta
