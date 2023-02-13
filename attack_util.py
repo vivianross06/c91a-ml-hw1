@@ -58,7 +58,20 @@ class PGDAttack():
 
     def cw_loss(self, logits, y):
         ### Your code here
-        pass
+        if self.targeted==False:
+            Zt0 = logits[[i for i in range(logits.size()[0])], y]
+            maxZc, _ = torch.max(logits, dim = -1)
+            tau = 0
+            loss = torch.clamp(Zt0 - maxZc, -tau)
+            loss = torch.mean(loss)
+            loss.backward()
+        else:
+            maxZc, _ = torch.max(logits, dim=-1)
+            Zt = logits[:, 1]
+            tau = 0
+            loss = torch.clamp(maxZc - Zt, -tau)
+            loss = torch.mean(loss)
+            loss.backward()
         ### Your code ends
 
     def perturb(self, model: nn.Module, X, y):
@@ -71,11 +84,30 @@ class PGDAttack():
             if X.grad is not None:
                 X.grad.zero_()
             output = model(X)
+            # print(X.size())
+            # print(output.size())
+            # print(y.size())
+            # test4 = output[:, 1]
+            # print(test4[0])
+            # print(test4.size())
+            # #test3, _ = torch.max(output, dim=-1)
+            # #print(test3.size())
+            # #print(torch.argmax(output, dim=-1).size())
+            # #test3 = output[[i for i in range(output.size()[0]), torch.argmax(output, dim=-1)]]
+            # #print(test3[0])
+            # print(output[[i for i in range(output.size()[0])], y].size())
+            # print(output[0])
+            # print(y[0])
+            # test = output[[i for i in range(output.size()[0])], y]
+            # print(test[0])
+            # test2 = output-1
+            # print(test2[0])
+            # print(torch.argmax(output, dim=-1).size())
             model.zero_grad()
             if (self.loss_type=='ce'):
                 self.ce_loss(output, y)
             else:
-                pass
+                self.cw_loss(output, y)
             data_grad = X.grad.data
             sign_data_grad = data_grad.sign()
             temp_delta = self.alpha * sign_data_grad
