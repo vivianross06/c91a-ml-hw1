@@ -64,7 +64,7 @@ class PGDAttack():
             mask = torch.where(top2ZcIndex[:, 0] == y, 1, 0)
             maxZc = top2Zc[[i for i in range(top2Zc.size()[0])], mask]
             tau = 0
-            loss = torch.clamp(Zt0 - maxZc, -tau)
+            loss = torch.clamp(Zt0 - maxZc, min=-tau)
             loss = torch.mean(loss)
             loss.backward()
         else:
@@ -73,7 +73,7 @@ class PGDAttack():
             maxZc = top2Zc[[i for i in range(top2Zc.size()[0])], mask]
             Zt = logits[:, 1]
             tau = 0
-            loss = torch.clamp(maxZc - Zt, -tau)
+            loss = torch.clamp(maxZc - Zt, min=-tau)
             loss = torch.mean(loss)
             loss.backward()
         ### Your code ends
