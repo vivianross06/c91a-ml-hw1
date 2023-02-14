@@ -60,7 +60,9 @@ class PGDAttack():
         ### Your code here
         if self.targeted==False:
             Zt0 = logits[[i for i in range(logits.size()[0])], y]
-            maxZc, _ = torch.max(logits, dim = -1)
+            top2Zc, top2ZcIndex = torch.topk(logits, dim=-1, k=2)
+            mask = torch.where(top2ZcIndex[:, 0] == y, 1, 0)
+            maxZc = top2Zc[[i for i in range(top2Zc.size()[0])], mask]
             tau = 0
             loss = torch.clamp(Zt0 - maxZc, -tau)
             loss = torch.mean(loss)
