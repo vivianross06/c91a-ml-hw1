@@ -64,14 +64,8 @@ class PGDAttack():
             mask = torch.where(top2ZcIndex[:, 0] == y, 1, 0)
             maxZc = top2Zc[[i for i in range(top2Zc.size()[0])], mask]
             tau = 0
-            f = torch.clamp(Zt0 - maxZc, min=-tau)
-            f = torch.sum(f)
-            c = 1
-            L2 = nn.MSELoss(reduction='sum')
-            images = 1.0/2*(torch.tanh(logits)+1)
-            L2_output = L2(images, logits)
-            loss = L2_output + c * f
-            #loss = torch.sum(loss)
+            loss = torch.clamp(Zt0 - maxZc, min=-tau)
+            loss = torch.sum(loss)
             loss.backward()
         else:
             top2Zc, top2ZcIndex = torch.topk(logits, dim=-1, k=2)
@@ -88,31 +82,12 @@ class PGDAttack():
         delta = torch.zeros_like(X)
         
         ### Your code here
-        X_var = X
+        X_var = X.data
         X.requires_grad = True
         for i in range(0, self.attack_step):
             if X.grad is not None:
                 X.grad.zero_()
             output = model(X)
-            # print(X.size())
-            # print(output.size())
-            # print(y.size())
-            # test4 = output[:, 1]
-            # print(test4[0])
-            # print(test4.size())
-            # #test3, _ = torch.max(output, dim=-1)
-            # #print(test3.size())
-            # #print(torch.argmax(output, dim=-1).size())
-            # #test3 = output[[i for i in range(output.size()[0]), torch.argmax(output, dim=-1)]]
-            # #print(test3[0])
-            # print(output[[i for i in range(output.size()[0])], y].size())
-            # print(output[0])
-            # print(y[0])
-            # test = output[[i for i in range(output.size()[0])], y]
-            # print(test[0])
-            # test2 = output-1
-            # print(test2[0])
-            # print(torch.argmax(output, dim=-1).size())
             model.zero_grad()
             if (self.loss_type=='ce'):
                 self.ce_loss(output, y)
@@ -126,7 +101,7 @@ class PGDAttack():
             delta = torch.clamp(delta, -self.eps, self.eps)
             X.data = X + delta
         ### Your code ends
-        
+        X.data = X_var
         return delta
 
 
