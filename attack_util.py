@@ -62,11 +62,16 @@ class PGDAttack():
             Zt0 = logits[[i for i in range(logits.size()[0])], y]
             top2Zc, top2ZcIndex = torch.topk(logits, dim=-1, k=2)
             mask = torch.where(top2ZcIndex[:, 0] == y, 1, 0)
-            print(mask)
             maxZc = top2Zc[[i for i in range(top2Zc.size()[0])], mask]
             tau = 0
-            loss = torch.clamp(Zt0 - maxZc, min=-tau)
-            loss = torch.sum(loss)
+            f = torch.clamp(Zt0 - maxZc, min=-tau)
+            f = torch.sum(f)
+            c = 1
+            L2 = nn.MSELoss(reduction='sum')
+            images = 1.0/2*(torch.tanh(logits)+1)
+            L2_output = L2(images, logits)
+            loss = L2_output + c * f
+            #loss = torch.sum(loss)
             loss.backward()
         else:
             top2Zc, top2ZcIndex = torch.topk(logits, dim=-1, k=2)
