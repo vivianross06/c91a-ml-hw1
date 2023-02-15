@@ -99,7 +99,9 @@ class PGDAttack():
             temp_img = X + temp_delta 
             delta = temp_img - X_var #get gradient across all iterations
             delta = torch.clamp(delta, -self.eps, self.eps)
-            X.data = torch.clamp(X.data + delta, 0, 1)
+            X.data = torch.clamp(X + delta, 0, 1)
+            #X.data = torch.clamp(X.data + delta, 0, 1)
+        return X.data
         ### Your code ends
         #X.data = X_var
         #return delta

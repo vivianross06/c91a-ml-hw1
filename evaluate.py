@@ -98,8 +98,7 @@ def main():
             ### robust accuracy
             # generate perturbation
             #perturbed_data = attacker.perturb(model, data, attack_labels) + data
-            attacker.perturb(model, data, attack_labels)
-            perturbed_data = data
+            perturbed_data = attacker.perturb(model, data, attack_labels)
             
             # predict
             predictions = model(perturbed_data)
