@@ -101,8 +101,8 @@ class PGDAttack():
             delta = torch.clamp(delta, -self.eps, self.eps)
             X.data = torch.clamp(X.data + delta, 0, 1)
         ### Your code ends
-        X.data = X_var
-        return delta
+        #X.data = X_var
+        #return delta
 
 
 ### FGSMAttack
