@@ -92,20 +92,18 @@ def main():
         
         with ctx_noparamgrad(model):
             ### clean accuracy
-            #predictions = model(data)
-            #clean_correct_num += torch.sum(torch.argmax(predictions, dim = -1) == labels).item()
+            predictions = model(data)
+            clean_correct_num += torch.sum(torch.argmax(predictions, dim = -1) == labels).item()
             
             ### robust accuracy
             # generate perturbation
             perturbed_data = attacker.perturb(model, data, attack_labels) + data
-            #perturbed_data = attacker.perturb(model, data, attack_labels)
             
             # predict
             predictions = model(perturbed_data)
             robust_correct_num += torch.sum(torch.argmax(predictions, dim = -1) == labels).item()
 
-    #print(f"Total number of images: {total}\nClean accuracy: {clean_correct_num / total}\nRobust accuracy {robust_correct_num / total}")
-    print(f"Total number of images: {total}\nRobust accuracy {robust_correct_num / total}")
+    print(f"Total number of images: {total}\nClean accuracy: {clean_correct_num / total}\nRobust accuracy {robust_correct_num / total}")
 
 
 if __name__ == "__main__":
