@@ -52,7 +52,7 @@ class PGDAttack():
     def ce_loss(self, logits, y):
         ### Your code here
         loss = nn.CrossEntropyLoss()
-        loss_output = loss(logits, y)
+        loss_output = loss(logits, y) 
         loss_output.backward()
         ### Your code ends
 
@@ -65,7 +65,7 @@ class PGDAttack():
             maxZc = top2Zc[[i for i in range(top2Zc.size()[0])], mask]
             tau = 0
             loss = torch.clamp(Zt0 - maxZc, min=-tau)
-            loss = torch.sum(loss)
+            loss = -torch.sum(loss)
             loss.backward()
         else:
             top2Zc, top2ZcIndex = torch.topk(logits, dim=-1, k=2)
