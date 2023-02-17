@@ -74,8 +74,7 @@ class PGDAttack():
             Zt = logits[:, 1]
             tau = 0
             loss = torch.clamp(maxZc - Zt, min=-tau)
-            print(loss)
-            loss = torch.sum(loss)
+            loss = -torch.sum(loss)
             loss.backward()
         ### Your code ends
 
